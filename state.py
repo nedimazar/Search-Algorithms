@@ -1,4 +1,5 @@
 import copy
+import random
 
 ### An abstract class that other states will inherit from.
 class State:
@@ -16,13 +17,87 @@ class State:
         pass
 
 
+
+## A state for the 8 puzzle priblem.
+class eightPuzzleState(State):
+
+    ## Creates an 8 puzzle board
+    def __init__(self, board = [[1, 2, 3], [4, 5, 6], [7, 8, None]], parent = None):
+
+        self.board = board
+        
+        if None in board[0]:
+            self.blankY = 0
+            self.blankX = board[0].index(None)
+        elif None in board[1]:
+            self.blankY = 1
+            self.blankX = board[1].index(None)
+        elif None in board[2]:
+            self.blankY = 2
+            self.blankX = board[2].index(None)
+
+
+        self.parent = parent
+
+    def __repr__(self):
+        return(f"{self.board[0]}\n{self.board[1]}\n{self.board[2]}")
+        
+    # Moves the blank left
+    def moveLeft(self):
+        b = copy.deepcopy(self.board)
+        if self.blankX > 0:
+            b[self.blankY][self.blankX] = b[self.blankY][self.blankX - 1]
+            b[self.blankY][self.blankX - 1] = None
+        return b
+
+    # Moves the blank right
+    def moveRight(self):
+        b = copy.deepcopy(self.board)
+        if self.blankX < 2:
+            b[self.blankY][self.blankX] = b[self.blankY][self.blankX + 1]
+            b[self.blankY][self.blankX + 1] = None
+        return b
+
+    # Moves the blank up
+    def moveUp(self):
+        b = copy.deepcopy(self.board)
+        if self.blankY > 0:
+            b[self.blankY][self.blankX] = b[self.blankY - 1][self.blankX]
+            b[self.blankY - 1][self.blankX] = None
+        return b
+
+    # Moves the blank down
+    def moveDown(self):
+        b = copy.deepcopy(self.board)
+        if self.blankY < 2:
+            b[self.blankY][self.blankX] = b[self.blankY + 1][self.blankX]
+            b[self.blankY + 1][self.blankX] = None
+        return b
+
+    # If the tiles are in this order and ending with the blank
+    def isGoal(self):
+        return self.board == [[1, 2, 3], [4, 5, 6], [7, 8, None]]
+
+    # There are no possible invalid states here
+    def isValidState(self, eightState):
+        return True
+
+    def successors(self):
+        successorStates = []
+
+        boards = [self.moveUp(), self.moveDown(), self.moveRight(), self.moveLeft()]
+        for board in boards:
+            if not board == self.board:
+                successorStates.append(eightPuzzleState(board, parent = self))
+
+        return successorStates
+
 ## helper function to handle changing left to right.
 def flip(side):
     if side == 'left':
         return 'right'
     else:
         return 'left'
-
 
 ## A State for the Fox and Chickens problem. We have four instance variables, representing the four objects.
 ##  (fox, chicken, grain, boat). Values for them are {'left','right'}"""
@@ -155,3 +230,5 @@ class TicTacToeState(State):
 
     def __repr__(self):
         return " %s\n %s\n %s\n" % (self.board[0], self.board[1], self.board[2])
+
+
