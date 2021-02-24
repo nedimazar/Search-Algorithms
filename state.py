@@ -44,6 +44,34 @@ class eightPuzzleState(State):
 
     def __hash__(self):
         return hash(str(self.board))
+
+    # Heuristic function for the 8 puzzle
+    def h(self):
+        h = 0
+        for y in range(3):
+            for x in range(3):
+                n = self.board[y][x]
+                h = h + self.manhattan(n, y, x)
+        return h
+
+    def __lt__(self, other):
+        return self.h() - other.h()
+
+    def manhattan(self, n, y, x):
+        if n:
+            correct = {1: (0, 0),
+                       2: (0, 1),
+                       3: (0, 2),
+                       4: (1, 0),
+                       5: (1, 1),
+                       6: (1, 2),
+                       7: (2, 0),
+                       8: (2, 1)}
+            goal = correct[n]
+            return abs(goal[0] - y) + abs(goal[1] - x)
+        else:
+            return 0
+
         
     # Moves the blank left
     def moveLeft(self):

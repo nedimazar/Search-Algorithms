@@ -1,5 +1,5 @@
 import state
-
+from heapq import *
 
 def BFS(initialState):
     searchQueue = [initialState]
@@ -70,6 +70,25 @@ def IDDFS(initialState):
         if limit <= 0:
             return None
 
+def ASTAR(initialState):
+    priorityQueue = [[0, initialState]]
+
+    closed = {}
+
+    while len(priorityQueue) > 0:
+        currentNode = heappop(priorityQueue)[1]
+        if currentNode.isGoal():
+            return currentNode
+        elif hash(currentNode) not in closed:
+            closed[hash(currentNode)] = 1
+            successorStates = currentNode.successors()
+
+            for node in successorStates:
+                if node not in closed:
+                    heappush(priorityQueue, [node.h(), node])
+    return None
+
+
 def flipPlayer(player) :
     if player == 'x' :
         return 'o'
@@ -91,7 +110,8 @@ def main():
 
     e = state.eightPuzzleState(board)
 
-    n = IDDFS(e)
+    n = ASTAR(e)
+
 
     print(n)
     
