@@ -58,6 +58,18 @@ def DLS(initialState, limit):
         else:
             return None
 
+def IDDFS(initialState):
+    limit = 1
+    while True:
+        node = DLS(initialState, limit)
+        if node:
+            return node, limit
+        limit = limit + 1
+
+        # Detect overflow
+        if limit <= 0:
+            return None
+
 def flipPlayer(player) :
     if player == 'x' :
         return 'o'
@@ -79,7 +91,7 @@ def main():
 
     e = state.eightPuzzleState(board)
 
-    n = DLS(e, 500000)
+    n = IDDFS(e)
 
     print(n)
     
