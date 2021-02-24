@@ -1,20 +1,62 @@
 import state
 
 
-def BFS(initialState) :
+def BFS(initialState):
     searchQueue = [initialState]
 
     closed = {}
 
-    while len(searchQueue) > 0 :
+    while len(searchQueue) > 0:
         currentNode = searchQueue.pop(0)
-        if currentNode.isGoal() :
+        if currentNode.isGoal():
             return currentNode
-        elif currentNode not in closed:
-            closed[currentNode] = 1
+        elif hash(currentNode) not in closed:
+            closed[hash(currentNode)] = 1
             successorStates = currentNode.successors()
-            searchQueue.extend(successorStates)
+
+            for node in successorStates:
+                if node not in closed:
+                    searchQueue.append(node)
     return None
+
+def DFS(initialState):
+    searchQueue = [initialState]
+
+    closed = {}
+
+    while len(searchQueue) > 0:
+        currentNode = searchQueue.pop()
+        if currentNode.isGoal():
+            return currentNode
+        elif hash(currentNode) not in closed:
+            closed[hash(currentNode)] = 1
+            successorStates = currentNode.successors()
+
+            for node in successorStates:
+                if node not in closed:
+                    searchQueue.append(node)
+    return None
+
+def DLS(initialState, limit):
+    searchQueue = [initialState]
+    closed = {}
+
+    depth = 0
+    while len(searchQueue) > 0:
+        if depth <= limit:
+            currentNode = searchQueue.pop()
+            if currentNode.isGoal():
+                return currentNode
+            elif hash(currentNode) not in closed:
+                closed[hash(currentNode)] = 1
+                successorStates = currentNode.successors()
+
+                for node in successorStates:
+                    if node not in closed:
+                        searchQueue.append(node)
+                depth = depth + 1
+        else:
+            return None
 
 def flipPlayer(player) :
     if player == 'x' :
@@ -37,7 +79,7 @@ def main():
 
     e = state.eightPuzzleState(board)
 
-    n = BFS(e)
+    n = DLS(e, 500000)
 
     print(n)
     

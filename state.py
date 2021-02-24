@@ -41,6 +41,9 @@ class eightPuzzleState(State):
 
     def __repr__(self):
         return(f"{self.board[0]}\n{self.board[1]}\n{self.board[2]}")
+
+    def __hash__(self):
+        return hash(str(self.board))
         
     # Moves the blank left
     def moveLeft(self):
