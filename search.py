@@ -31,39 +31,42 @@ def DFS(initialState):
         elif hash(currentNode) not in closed:
             closed[hash(currentNode)] = 1
             successorStates = currentNode.successors()
-
             for node in successorStates:
                 if node not in closed:
                     searchQueue.append(node)
     return None
 
-def DLS(initialState, limit):
-    searchQueue = [initialState]
+def DLDFS(initialState, limit):
     closed = {}
 
-    depth = 0
-    while len(searchQueue) > 0:
-        if depth <= limit:
-            currentNode = searchQueue.pop()
-            if currentNode.isGoal():
-                return currentNode
-            elif hash(currentNode) not in closed:
-                closed[hash(currentNode)] = 1
-                successorStates = currentNode.successors()
+    def overload(initialState, limit):
+        closed[hash(initialState)] = True
 
-                for node in successorStates:
-                    if node not in closed:
-                        searchQueue.append(node)
-                depth = depth + 1
-        else:
+
+        if initialState.isGoal():
+            return initialState
+
+        if limit <= 0:
             return None
+        
+        for state in initialState.successors():
+            if hash(state) not in closed:
+                closed[hash(state)] = True
+                result = overload(state, limit - 1)
+
+                if result:
+                    return result
+        return None
+
+    return overload(initialState, limit)
 
 def IDDFS(initialState):
     limit = 1
+
     while True:
-        node = DLS(initialState, limit)
+        node = DLDFS(initialState, limit)
         if node:
-            return node, limit
+            return node
         limit = limit + 1
 
         # Detect overflow
@@ -107,11 +110,14 @@ def minimax(initialState, player) :
 
 def main():
     board = [[6, None, 2], [1, 4, 3], [7, 5, 8]]
+    #board = [[8, 6, 7], [2, 5, 4], [3, None, 1]]
+    
+    #board = [[1, 2, 3], [4, 5, 6], [7, None, 8]]
+
 
     e = state.eightPuzzleState(board)
 
     n = ASTAR(e)
-
 
     print(n)
     
