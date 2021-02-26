@@ -258,6 +258,9 @@ class TicTacToeState(State):
                 self.score = -1
         else :
             self.score = 0
+    
+    def getScore(self):
+        return self.score
 
     def __repr__(self):
         return " %s\n %s\n %s\n" % (self.board[0], self.board[1], self.board[2])

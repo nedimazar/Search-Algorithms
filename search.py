@@ -1,4 +1,5 @@
 import state
+from state import *
 from heapq import *
 
 def BFS(initialState):
@@ -99,26 +100,30 @@ def flipPlayer(player) :
         return 'x'
 
 ##  player will be x or o.
-'''
 def minimax(initialState, player) :
     if initialState.isGoal() :
         initialState.scoreSelf(player)
-        return initialState
+        print(initialState)
+        return initialState.getScore()
     else :
-        ### you do this part
-'''
+        if player == 'x':
+            maxVal = -10e9
+            for state in initialState.successors(player):
+                value = minimax(state, flipPlayer(player))
+                maxVal = max(maxVal, value)
+            return maxVal
+        else:
+            minVal = 10e9
+            for state in initialState.successors(player):
+                value = minimax(state, flipPlayer(player))
+                minVal = min(minVal, value)
+            return minVal
+
+
 
 def main():
-    board = [[6, None, 2], [1, 4, 3], [7, 5, 8]]
-    #board = [[8, 6, 7], [2, 5, 4], [3, None, 1]]
-    
-    #board = [[1, 2, 3], [4, 5, 6], [7, None, 8]]
-
-
-    e = state.eightPuzzleState(board)
-
-    n = ASTAR(e)
-
-    print(n)
+    board = TicTacToeState()
+    print(minimax(board, 'x'))
+  
     
 main()
