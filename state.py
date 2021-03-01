@@ -252,7 +252,7 @@ class TicTacToeState(State):
         if not winner:
             winner = diagonalWin(self.board)
         if winner:
-            if winner == player:
+            if winner == 'x':
                 self.score = 1
             else:
                 self.score = -1
